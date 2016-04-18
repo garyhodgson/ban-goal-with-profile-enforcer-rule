@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.garyhodgson.maven.enforcer</groupId>
+    <artifactId>ban-goal-with-profile-enforcer-rule-sample-usage</artifactId>
+    <version>1</version>
+    <packaging>jar</packaging>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.4.1</version>
+                <executions>
+                    <execution>
+                        <id>default</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <fail>true</fail>
+                            <rules>
+                                <myCustomRule implementation="com.garyhodgson.maven.enforcer.rule.BanGoalWithProfileRule">
+                                    <profiles>format-source</profiles>
+                                    <goals>initialize</goals>
+                                    <artifactId>${project.artifactId}</artifactId>
+                                    <message>Profile not allowed during release as it causes hard-coded property values to be stored in the released pom.</message>
+                                    <verbose>true</verbose>
+                                </myCustomRule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.garyhodgson.maven.enforcer</groupId>
+                        <artifactId>ban-goal-with-profile-enforcer-rule</artifactId>
+                        <version>1.0-SNAPSHOT</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>format-source</id>
+            <activation>
+                <file>
+                    <missing>never.exists</missing>
+                </file>
+            </activation>
+        </profile>
+    </profiles>
+</project>
